@@ -17,16 +17,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (meta, content) = grids[0].decode()?;
     println!("Decoded content: {}", content);
 
-    if let Ok(ga_qr) = google_authenticator_converter::parse(&content) {
-        println!("Issuer: {:?}", ga_qr.issuer);
-        println!("Account Name: {:?}", ga_qr.account_name);
-        println!("Secret: {:?}", ga_qr.secret);
-        println!("Algorithm: {:?}", ga_qr.algorithm);
-        println!("Digits: {:?}", ga_qr.digits);
-        println!("Period: {:?}", ga_qr.period);
-    } else {
-        eprintln!("Failed to parse Google Authenticator QR code");
-    } 
+    match google_authenticator_converter::process_data(&content) {
+        Ok(accounts) => {
+            for account in accounts {
+                println!("Issuer: {:?}", account.issuer);
+                println!("Account Name: {:?}", account.name);
+                println!("Secret: {:?}", account.secret);
+            }
+            Ok(())
+        }
+        
+        Err(e) => {
+            eprintln!("Failed to parse Google Authenticator QR code: {}", e);
+            Ok(())
+        }
+    }
 
 
 }
