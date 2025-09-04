@@ -14,7 +14,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
 
-    let (meta, content) = grids[0].decode()?;
+    let (_meta, content) = grids[0].decode()?;
     println!("Decoded content: {}", content);
 
     match google_authenticator_converter::process_data(&content) {
